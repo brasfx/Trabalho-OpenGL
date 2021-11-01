@@ -1,0 +1,2 @@
+g++ index.c -lglut -lGL -lGLEW -lGLU -o index
+./index
