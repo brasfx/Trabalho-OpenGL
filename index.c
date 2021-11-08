@@ -146,11 +146,15 @@ void display(void)
   glColor3f(0.0, 0.0, 1.0);
   triangulo(vertice2, GL_TRIANGLES, 4);
   glColor3f(0.0, 0.0, 1.0);
-  RotateZ(-15);
+  Translate(4, 4, 0); //Move para 3 quadrante para rotacionar
+  RotateZ(90); // Rotaciona em z
+  Translate(-5, -3, 0); // Move para a posicao correta
   // RotateX(-30);
-  Translate(1, 1, 0);
+  //Translate(1, 1, 0);
   glColor3f(0.0, 0.0, 1.0);
   quadrilatero(vertice3, GL_QUADS, 4);
+  //RotateZ(-30);
+  //
   // Translate(2, -1, 0);
   // glColor3f(1.0, 0.0, 0.0);
   // quadrilatero(vertice3, GL_LINE_LOOP, 4);
