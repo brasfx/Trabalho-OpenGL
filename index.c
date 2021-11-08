@@ -13,6 +13,17 @@ void quadrilatero(float verts[4][3], int primitiva, float espessura)
   glEnd();
 }
 
+void poligono(float verts[8][3], int primitiva, float espessura)
+{
+  glLineWidth(espessura);
+  glBegin(primitiva);
+  for (int i = 0; i < 8; i++)
+  {
+    glVertex3fv(verts[i]);
+  }
+  glEnd();
+}
+
 void triangulo(float verts[3][3], int primitiva, float espessura)
 {
   glLineWidth(espessura);
@@ -126,7 +137,9 @@ void display(void)
   float vertice1[3][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0}};
   float vertice2[3][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0}};
   float vertice3[4][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0}, {3, 1, 0}};
-  // float vertices[3][3] = {{2, 3, 0}, {4, 3, 0}, {0, 2, 2}};
+  float vertice4[3][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0}};
+  float vertice5[4][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0}, {3, 1, 0}};
+  float vertices[8][3] = {{3, 1, 0}, {3, 2, 0}, {3, 3, 0}, {2, 3, 0},{2, 2, 0}, {1, 2, 0},{1, 1, 0}, {2, 1, 0}};
   glClearColor(1.0, 1.0, 1.0, 0.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
@@ -137,6 +150,7 @@ void display(void)
   glColor3f(0.0, 1.0, 0.0);
   linha(0, -40, 0, 0, 40, 0, 4.0);
   glColor3f(0.0, 0.0, 1.0);
+  Translate(-3, 0, 0);
   triangulo(vertice1, GL_TRIANGLES, 4);
   Translate(3, 2, 0);
   RotateZ(-180);
@@ -158,6 +172,15 @@ void display(void)
   // Translate(2, -1, 0);
   // glColor3f(1.0, 0.0, 0.0);
   // quadrilatero(vertice3, GL_LINE_LOOP, 4);
+  Translate(4, -4, 0);
+  RotateZ(90);
+  Translate(4, -4, 0);
+  RotateZ(90);
+  Translate(2, -8, 0);
+  quadrilatero(vertice5, GL_QUADS, 4);
+
+  Translate(-3, -1, 0);
+  poligono(vertices, GL_TRIANGLE_FAN, 2);
   glLoadIdentity();
   glFlush();
 }
