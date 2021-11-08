@@ -140,6 +140,7 @@ void display(void)
   float vertice4[3][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0}};
   float vertice5[4][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0}, {3, 1, 0}};
   float vertices[8][3] = {{3, 1, 0}, {3, 2, 0}, {3, 3, 0}, {2, 3, 0},{2, 2, 0}, {1, 2, 0},{1, 1, 0}, {2, 1, 0}};
+  float vertices2[8][3] = {{3, 1, 0}, {3, 2, 0}, {3, 3, 0}, {2, 3, 0},{2, 2, 0}, {1, 2, 0},{1, 1, 0}, {2, 1, 0}};
   glClearColor(1.0, 1.0, 1.0, 0.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
@@ -166,7 +167,7 @@ void display(void)
   // RotateX(-30);
   //Translate(1, 1, 0);
   glColor3f(0.0, 0.0, 1.0);
-  quadrilatero(vertice3, GL_QUADS, 4);
+  //quadrilatero(vertice3, GL_QUADS, 4);
   //RotateZ(-30);
   //
   // Translate(2, -1, 0);
@@ -177,10 +178,17 @@ void display(void)
   Translate(4, -4, 0);
   RotateZ(90);
   Translate(2, -8, 0);
-  quadrilatero(vertice5, GL_QUADS, 4);
+  //quadrilatero(vertice5, GL_QUADS, 4);
 
-  Translate(-3, -1, 0);
+  //Translate(-3, -1, 0);
+  RotateZ(-45);
+  Scale(0.70,0.70,0.70);
+  Translate(-1.97,4,0);
   poligono(vertices, GL_TRIANGLE_FAN, 2);
+  
+  RotateZ(180);
+  Translate(-1.91,-6.12,0);
+  poligono(vertices2, GL_TRIANGLE_FAN, 2);
   glLoadIdentity();
   glFlush();
 }
