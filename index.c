@@ -2,8 +2,38 @@
 #include <stdlib.h>
 #include <math.h>
 
-GLfloat angle, fAspect, UpDown, LeftRight, Forward;
+GLfloat angle, fAspect, UpDown, LeftRight, Forward, *resultado;
+GLfloat ambientLight[] = {1.0, 1.0, 1.0, 1.0};
+GLfloat difuse[] = {0.8, 0.8, 0.8, 1.0};
+GLfloat lightPosition[] = {30.0, 30.0, 0.0, 1.0};
+GLfloat brilho[] = {50.0};
 GLint perspectiva;
+
+void produto(float *v1, float *v2)
+{
+  resultado[0] = v1[1] * v2[2] - v1[2] * v2[1];
+  resultado[1] = -(v1[0] * v2[2] - v1[2] * v2[0]);
+  resultado[2] = v1[0] * v2[1] - v1[1] * v2[0];
+  normaliza(resultado);
+}
+
+void normal(float *v1, float *v2, float *v3)
+{
+  float x[] = {v2[0] - v1[0], v2[1] - v1[1], v2[2] - v1[2]};
+
+  float y[] = {v3[0] - v1[0], v3[1] - v1[1], v3[2] - v1[2]};
+
+  produto(x, y);
+}
+
+void normaliza(float *v)
+{
+  float raiz = sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+  for (int i = 0; i < 3; i++)
+  {
+    resultado[i] = resultado[i] / raiz;
+  }
+}
 
 void quadrilatero(float verts[4][3], int primitiva, float espessura)
 {
@@ -47,22 +77,20 @@ void poligono3d(float verts[16][3], float espessura)
     glVertex3fv(verts[i]);
   }
   glBegin(GL_QUADS);
- 
+
   for (int i = 0; i < 7; i++)
   {
     glVertex3fv(verts[i]);
-    glVertex3fv(verts[i+1]);
-    glVertex3fv(verts[i+8]);
-    glVertex3fv(verts[i+9]);
+    glVertex3fv(verts[i + 1]);
+    glVertex3fv(verts[i + 8]);
+    glVertex3fv(verts[i + 9]);
   }
-  
+
   glVertex3fv(verts[7]);
   glVertex3fv(verts[1]);
   glVertex3fv(verts[15]);
   glVertex3fv(verts[8]);
-  
-  
-  
+
   glEnd();
 }
 
@@ -72,19 +100,30 @@ void triangulo3d(float verts[6][3], float espessura)
   glBegin(GL_TRIANGLES);
   for (int i = 0; i < 6; i++)
   {
+    if (i < 3)
+    {
+      glNormal3f(0, 0, 1);
+    }
+    else
+    {
+      glNormal3f(0, 0, -1);
+    }
     glVertex3fv(verts[i]);
   }
   glBegin(GL_QUADS);
+  glNormal3f(-1, -1, 0);
   glVertex3fv(verts[0]);
   glVertex3fv(verts[1]);
   glVertex3fv(verts[3]);
   glVertex3fv(verts[4]);
-  
+
+  glNormal3f(1, 1, 0);
   glVertex3fv(verts[1]);
   glVertex3fv(verts[2]);
   glVertex3fv(verts[4]);
   glVertex3fv(verts[5]);
-  
+
+  glNormal3f(0, -1, 0);
   glVertex3fv(verts[2]);
   glVertex3fv(verts[1]);
   glVertex3fv(verts[5]);
@@ -191,21 +230,29 @@ void Scale(float sx, float sy, float sz)
 
 void display(void)
 {
-//2d triangulo
+  //2d triangulo
   float vertice1[3][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0}};
   float vertice2[3][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0}};
-//3d triangulo
-  float vertice3[6][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0},{2, 3, 1}, {3, 2, 1}, {4, 3, 1}};
-  float vertice4[6][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0},{2, 3, 1}, {3, 2, 1}, {4, 3, 1}};
-//2d Concavo
+  //3d triangulo
+  float vertice3[6][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0}, {2, 3, 1}, {3, 2, 1}, {4, 3, 1}};
+  float vertice4[6][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0}, {2, 3, 1}, {3, 2, 1}, {4, 3, 1}};
+  //2d Concavo
   float vertices[8][3] = {{3, 1, 0}, {3, 2, 0}, {3, 3, 0}, {2, 3, 0}, {2, 2, 0}, {1, 2, 0}, {1, 1, 0}, {2, 1, 0}};
   float vertices2[8][3] = {{3, 1, 0}, {3, 2, 0}, {3, 3, 0}, {2, 3, 0}, {2, 2, 0}, {1, 2, 0}, {1, 1, 0}, {2, 1, 0}};
-//3d Concavo
-  float vertices3[16][3] = {{3, 1, 0}, {3, 2, 0}, {3, 3, 0}, {2, 3, 0}, {2, 2, 0}, {1, 2, 0}, {1, 1, 0}, {2, 1, 0},{3, 1, 1}, {3, 2, 1}, {3, 3, 1}, {2, 3, 1}, {2, 2, 1}, {1, 2, 1}, {1, 1, 1}, {2, 1, 1}};
-  float vertices4[16][3] = {{3, 1, 0}, {3, 2, 0}, {3, 3, 0}, {2, 3, 0}, {2, 2, 0}, {1, 2, 0}, {1, 1, 0}, {2, 1, 0},{3, 1, 1}, {3, 2, 1}, {3, 3, 1}, {2, 3, 1}, {2, 2, 1}, {1, 2, 1}, {1, 1, 1}, {2, 1, 1}};
+  //3d Concavo
+  float vertices3[16][3] = {{3, 1, 0}, {3, 2, 0}, {3, 3, 0}, {2, 3, 0}, {2, 2, 0}, {1, 2, 0}, {1, 1, 0}, {2, 1, 0}, {3, 1, 1}, {3, 2, 1}, {3, 3, 1}, {2, 3, 1}, {2, 2, 1}, {1, 2, 1}, {1, 1, 1}, {2, 1, 1}};
+  float vertices4[16][3] = {{3, 1, 0}, {3, 2, 0}, {3, 3, 0}, {2, 3, 0}, {2, 2, 0}, {1, 2, 0}, {1, 1, 0}, {2, 1, 0}, {3, 1, 1}, {3, 2, 1}, {3, 3, 1}, {2, 3, 1}, {2, 2, 1}, {1, 2, 1}, {1, 1, 1}, {2, 1, 1}};
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_LIGHTING);
   glClearColor(1.0, 1.0, 1.0, 0.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glEnable(GL_DEPTH_TEST);
+  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLight);
+  glEnable(GL_COLOR_MATERIAL);
+  glShadeModel(GL_SMOOTH);
+  glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, difuse);
+  glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+  glEnable(GL_LIGHT0);
   glColor3f(0.0, 0.0, 1.0);
   Translate(-3, 0, 0);
   //triangulo(vertice1, GL_TRIANGLES, 4);
