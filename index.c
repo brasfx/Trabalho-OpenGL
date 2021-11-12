@@ -2,38 +2,52 @@
 #include <stdlib.h>
 #include <math.h>
 
-GLfloat angle, fAspect, UpDown, LeftRight, Forward, *resultado;
+GLfloat angle, fAspect, UpDown, LeftRight, Forward;
 GLfloat ambientLight[] = {1.0, 1.0, 1.0, 1.0};
 GLfloat difuse[] = {0.8, 0.8, 0.8, 1.0};
 GLfloat lightPosition[] = {30.0, 30.0, 0.0, 1.0};
 GLfloat brilho[] = {50.0};
 GLint perspectiva;
 
-void produto(float *v1, float *v2)
+float *normaliza(float *v)
 {
-  resultado[0] = v1[1] * v2[2] - v1[2] * v2[1];
-  resultado[1] = -(v1[0] * v2[2] - v1[2] * v2[0]);
-  resultado[2] = v1[0] * v2[1] - v1[1] * v2[0];
-  normaliza(resultado);
-}
-
-void normal(float *v1, float *v2, float *v3)
-{
-  float x[] = {v2[0] - v1[0], v2[1] - v1[1], v2[2] - v1[2]};
-
-  float y[] = {v3[0] - v1[0], v3[1] - v1[1], v3[2] - v1[2]};
-
-  produto(x, y);
-}
-
-void normaliza(float *v)
-{
+  float *normalizado;
+  normalizado =(float*) malloc(3*sizeof(float));
   float raiz = sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
   for (int i = 0; i < 3; i++)
   {
-    resultado[i] = resultado[i] / raiz;
+    normalizado[i] = normalizado[i] / raiz;
   }
+  return normalizado;
 }
+
+float *produto(float *v1, float *v2)
+{
+  float *resultadop;
+  resultadop =(float*) malloc(3*sizeof(float));
+  resultadop[0] = v1[1] * v2[2] - v1[2] * v2[1];
+  resultadop[1] = -(v1[0] * v2[2] - v1[2] * v2[0]);
+  resultadop[2] = v1[0] * v2[1] - v1[1] * v2[0];
+
+
+  resultadop = normaliza(resultadop);
+  return resultadop;
+}
+
+float *Normal(float *v1, float *v2, float *v3)
+{
+  float *vetor;
+  vetor = (float*)(3*sizeof(float));
+  float x[] = {v2[0] - v1[0], v2[1] - v1[1], v2[2] - v1[2]};
+
+  float y[] = {v3[0] - v1[0], v3[1] - v1[1], v3[2] - v1[2]};
+  
+  vetor = produto(x,y);
+
+  return vetor;
+}
+
+
 
 void quadrilatero(float verts[4][3], int primitiva, float espessura)
 {
@@ -72,7 +86,14 @@ void poligono3d(float verts[16][3], float espessura)
 {
   glLineWidth(espessura);
   glBegin(GL_TRIANGLE_FAN);
-  for (int i = 0; i < 16; i++)
+  glNormal3fv(Normal(verts[0],verts[1],verts[2]));
+  for (int i = 0; i < 8; i++)
+  {
+    glVertex3fv(verts[i]);
+  }
+  glBegin(GL_TRIANGLE_FAN);
+  glNormal3fv(Normal(verts[0],verts[2],verts[1]));
+  for (int i = 8; i < 16; i++)
   {
     glVertex3fv(verts[i]);
   }
@@ -80,14 +101,17 @@ void poligono3d(float verts[16][3], float espessura)
 
   for (int i = 0; i < 7; i++)
   {
+    glNormal3fv(Normal(verts[i],verts[i+1],verts[i+8]));
     glVertex3fv(verts[i]);
     glVertex3fv(verts[i + 1]);
     glVertex3fv(verts[i + 8]);
     glVertex3fv(verts[i + 9]);
   }
+  
+  glNormal3fv(Normal(verts[7],verts[1],verts[15]));
 
   glVertex3fv(verts[7]);
-  glVertex3fv(verts[1]);
+  glVertex3fv(verts[0]);
   glVertex3fv(verts[15]);
   glVertex3fv(verts[8]);
 
@@ -102,28 +126,28 @@ void triangulo3d(float verts[6][3], float espessura)
   {
     if (i < 3)
     {
-      glNormal3f(0, 0, 1);
+      glNormal3fv(Normal(verts[0],verts[1],verts[2]));
     }
     else
     {
-      glNormal3f(0, 0, -1);
+      glNormal3fv(Normal(verts[5],verts[4],verts[3]));
     }
     glVertex3fv(verts[i]);
   }
   glBegin(GL_QUADS);
-  glNormal3f(-1, -1, 0);
+  glNormal3fv(Normal(verts[0],verts[1],verts[3]));
   glVertex3fv(verts[0]);
   glVertex3fv(verts[1]);
   glVertex3fv(verts[3]);
   glVertex3fv(verts[4]);
 
-  glNormal3f(1, 1, 0);
+  glNormal3fv(Normal(verts[1],verts[2],verts[4]));
   glVertex3fv(verts[1]);
   glVertex3fv(verts[2]);
   glVertex3fv(verts[4]);
   glVertex3fv(verts[5]);
 
-  glNormal3f(0, -1, 0);
+  glNormal3fv(Normal(verts[2],verts[1],verts[5]));
   glVertex3fv(verts[2]);
   glVertex3fv(verts[1]);
   glVertex3fv(verts[5]);
@@ -244,7 +268,7 @@ void display(void)
   float vertices4[16][3] = {{3, 1, 0}, {3, 2, 0}, {3, 3, 0}, {2, 3, 0}, {2, 2, 0}, {1, 2, 0}, {1, 1, 0}, {2, 1, 0}, {3, 1, 1}, {3, 2, 1}, {3, 3, 1}, {2, 3, 1}, {2, 2, 1}, {1, 2, 1}, {1, 1, 1}, {2, 1, 1}};
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_LIGHTING);
-  glClearColor(1.0, 1.0, 1.0, 0.0);
+  //glClearColor(1.0, 1.0, 1.0, 0.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLight);
   glEnable(GL_COLOR_MATERIAL);
