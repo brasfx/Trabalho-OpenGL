@@ -91,26 +91,32 @@ void poligono3d(float verts[16][3], float espessura)
   {
     glVertex3fv(verts[i]);
   }
+  glEnd();
   glBegin(GL_TRIANGLE_FAN);
   glNormal3fv(Normal(verts[0],verts[2],verts[1]));
   for (int i = 8; i < 16; i++)
   {
     glVertex3fv(verts[i]);
   }
-  glBegin(GL_QUADS);
-
+  glEnd();
+  glBegin(GL_TRIANGLES);
   for (int i = 0; i < 7; i++)
   {
+    
     glNormal3fv(Normal(verts[i],verts[i+1],verts[i+8]));
     glVertex3fv(verts[i]);
     glVertex3fv(verts[i + 1]);
     glVertex3fv(verts[i + 8]);
+    glVertex3fv(verts[i + 1]);
+    glVertex3fv(verts[i + 8]);
     glVertex3fv(verts[i + 9]);
   }
-  
-  glNormal3fv(Normal(verts[7],verts[1],verts[15]));
+
+  glNormal3fv(Normal(verts[7],verts[0],verts[15]));
 
   glVertex3fv(verts[7]);
+  glVertex3fv(verts[0]);
+  glVertex3fv(verts[15]);
   glVertex3fv(verts[0]);
   glVertex3fv(verts[15]);
   glVertex3fv(verts[8]);
@@ -122,33 +128,42 @@ void triangulo3d(float verts[6][3], float espessura)
 {
   glLineWidth(espessura);
   glBegin(GL_TRIANGLES);
-  for (int i = 0; i < 6; i++)
+  glNormal3fv(Normal(verts[0],verts[1],verts[2]));
+  for (int i = 0; i < 3; i++)
   {
-    if (i < 3)
-    {
-      glNormal3fv(Normal(verts[0],verts[1],verts[2]));
-    }
-    else
-    {
-      glNormal3fv(Normal(verts[5],verts[4],verts[3]));
-    }
     glVertex3fv(verts[i]);
   }
-  glBegin(GL_QUADS);
+  glEnd();
+  glBegin(GL_TRIANGLES);
+  glNormal3fv(Normal(verts[5],verts[4],verts[3]));
+  for (int i = 3; i < 6; i++)
+  {
+
+    glVertex3fv(verts[i]);
+  }
+  glEnd();
+  
+  glBegin(GL_TRIANGLES);
   glNormal3fv(Normal(verts[0],verts[1],verts[3]));
   glVertex3fv(verts[0]);
   glVertex3fv(verts[1]);
   glVertex3fv(verts[3]);
+  glVertex3fv(verts[1]);
+  glVertex3fv(verts[3]);
   glVertex3fv(verts[4]);
-
+  
   glNormal3fv(Normal(verts[1],verts[2],verts[4]));
   glVertex3fv(verts[1]);
+  glVertex3fv(verts[2]);
+  glVertex3fv(verts[4]);
   glVertex3fv(verts[2]);
   glVertex3fv(verts[4]);
   glVertex3fv(verts[5]);
 
   glNormal3fv(Normal(verts[2],verts[1],verts[5]));
   glVertex3fv(verts[2]);
+  glVertex3fv(verts[1]);
+  glVertex3fv(verts[5]);
   glVertex3fv(verts[1]);
   glVertex3fv(verts[5]);
   glVertex3fv(verts[3]);
