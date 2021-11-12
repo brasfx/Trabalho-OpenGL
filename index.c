@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-GLfloat angle, fAspect, left, rigth, lookAtAngle;
+GLfloat angle, fAspect, UpDown, LeftRight, Forward;
 GLint perspectiva;
 
 void quadrilatero(float verts[4][3], int primitiva, float espessura)
@@ -35,6 +35,60 @@ void triangulo(float verts[3][3], int primitiva, float espessura)
   {
     glVertex3fv(verts[i]);
   }
+  glEnd();
+}
+
+void poligono3d(float verts[16][3], float espessura)
+{
+  glLineWidth(espessura);
+  glBegin(GL_TRIANGLE_FAN);
+  for (int i = 0; i < 16; i++)
+  {
+    glVertex3fv(verts[i]);
+  }
+  glBegin(GL_QUADS);
+ 
+  for (int i = 0; i < 7; i++)
+  {
+    glVertex3fv(verts[i]);
+    glVertex3fv(verts[i+1]);
+    glVertex3fv(verts[i+8]);
+    glVertex3fv(verts[i+9]);
+  }
+  
+  glVertex3fv(verts[7]);
+  glVertex3fv(verts[1]);
+  glVertex3fv(verts[15]);
+  glVertex3fv(verts[8]);
+  
+  
+  
+  glEnd();
+}
+
+void triangulo3d(float verts[6][3], float espessura)
+{
+  glLineWidth(espessura);
+  glBegin(GL_TRIANGLES);
+  for (int i = 0; i < 6; i++)
+  {
+    glVertex3fv(verts[i]);
+  }
+  glBegin(GL_QUADS);
+  glVertex3fv(verts[0]);
+  glVertex3fv(verts[1]);
+  glVertex3fv(verts[3]);
+  glVertex3fv(verts[4]);
+  
+  glVertex3fv(verts[1]);
+  glVertex3fv(verts[2]);
+  glVertex3fv(verts[4]);
+  glVertex3fv(verts[5]);
+  
+  glVertex3fv(verts[2]);
+  glVertex3fv(verts[1]);
+  glVertex3fv(verts[5]);
+  glVertex3fv(verts[3]);
   glEnd();
 }
 
@@ -137,24 +191,31 @@ void Scale(float sx, float sy, float sz)
 
 void display(void)
 {
+//2d triangulo
   float vertice1[3][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0}};
   float vertice2[3][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0}};
-  float vertice3[4][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0}, {3, 1, 0}};
-  float vertice4[3][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0}};
-  float vertice5[4][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0}, {3, 1, 0}};
+//3d triangulo
+  float vertice3[6][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0},{2, 3, 1}, {3, 2, 1}, {4, 3, 1}};
+  float vertice4[6][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0},{2, 3, 1}, {3, 2, 1}, {4, 3, 1}};
+//2d Concavo
   float vertices[8][3] = {{3, 1, 0}, {3, 2, 0}, {3, 3, 0}, {2, 3, 0}, {2, 2, 0}, {1, 2, 0}, {1, 1, 0}, {2, 1, 0}};
   float vertices2[8][3] = {{3, 1, 0}, {3, 2, 0}, {3, 3, 0}, {2, 3, 0}, {2, 2, 0}, {1, 2, 0}, {1, 1, 0}, {2, 1, 0}};
+//3d Concavo
+  float vertices3[16][3] = {{3, 1, 0}, {3, 2, 0}, {3, 3, 0}, {2, 3, 0}, {2, 2, 0}, {1, 2, 0}, {1, 1, 0}, {2, 1, 0},{3, 1, 1}, {3, 2, 1}, {3, 3, 1}, {2, 3, 1}, {2, 2, 1}, {1, 2, 1}, {1, 1, 1}, {2, 1, 1}};
+  float vertices4[16][3] = {{3, 1, 0}, {3, 2, 0}, {3, 3, 0}, {2, 3, 0}, {2, 2, 0}, {1, 2, 0}, {1, 1, 0}, {2, 1, 0},{3, 1, 1}, {3, 2, 1}, {3, 3, 1}, {2, 3, 1}, {2, 2, 1}, {1, 2, 1}, {1, 1, 1}, {2, 1, 1}};
   glClearColor(1.0, 1.0, 1.0, 0.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
   glColor3f(0.0, 0.0, 1.0);
   Translate(-3, 0, 0);
-  triangulo(vertice1, GL_TRIANGLES, 4);
+  //triangulo(vertice1, GL_TRIANGLES, 4);
+  triangulo3d(vertice3, 4);
   Translate(3, 2, 0);
   RotateZ(-180);
   Translate(-3, -2, 0);
   glColor3f(0.0, 0.0, 1.0);
-  triangulo(vertice2, GL_TRIANGLES, 4);
+  //triangulo(vertice2, GL_TRIANGLES, 4);
+  triangulo3d(vertice4, 4);
   glColor3f(0.0, 0.0, 1.0);
   Translate(4, 4, 0);   //Move para 3 quadrante para rotacionar
   RotateZ(90);          // Rotaciona em z
@@ -168,10 +229,12 @@ void display(void)
   RotateZ(-45);
   Scale(0.70, 0.70, 0.70);
   Translate(-1.97, 4, 0);
-  poligono(vertices, GL_TRIANGLE_FAN, 2);
+  //poligono(vertices, GL_TRIANGLE_FAN, 2);
+  poligono3d(vertices3, 2);
   RotateZ(180);
   Translate(-1.91, -6.12, 0);
-  poligono(vertices2, GL_TRIANGLE_FAN, 2);
+  //poligono(vertices2, GL_TRIANGLE_FAN, 2);
+  poligono3d(vertices4, 2);
   glLoadIdentity();
   glFlush();
 }
@@ -195,7 +258,7 @@ void reshape(int w, int h)
     gluPerspective(angle, fAspect, -1.0, 100.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(left, rigth, lookAtAngle, 0, 0, 0, 0, 1, 0);
+    gluLookAt(UpDown, LeftRight, Forward, 0, 0, 0, 0, 1, 0);
   }
 }
 
@@ -205,27 +268,27 @@ void GerenciaTeclado(unsigned char key, int x, int y)
   {
   case 'W':
   case 'w':
-    left += 20;
+    UpDown += 20;
     break;
   case 'A':
   case 'a':
-    rigth -= 20;
+    LeftRight -= 20;
     break;
   case 'S':
   case 's':
-    left -= 20;
+    UpDown -= 20;
     break;
   case 'D':
   case 'd':
-    rigth += 20;
+    LeftRight += 20;
     break;
   case 'Q':
   case 'q':
-    lookAtAngle += 20;
+    Forward += 20;
     break;
   case 'E':
   case 'e':
-    lookAtAngle -= 20;
+    Forward -= 20;
     break;
   case 'F':
   case 'f':
@@ -267,7 +330,7 @@ int main(int argc, char **argv)
 {
   glutInit(&argc, argv);
   angle = 45;
-  lookAtAngle = 200;
+  Forward = 200;
   perspectiva = 1;
   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
   glutInitWindowSize(800, 800);
