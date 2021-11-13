@@ -3,12 +3,13 @@
 #include <math.h>
 
 GLfloat angle, fAspect, UpDown, LeftRight, Forward;
-GLfloat ambientLight[] = {1.0, 1.0, 1.0, 1.0};
-GLfloat difuse[] = {0.8, 0.8, 0.8, 1.0};
-GLfloat especular[] = {1.0, 1.0, 1.0, 0.5};
-GLfloat lightPosition[] = {30.0, 30.0, 0.0, 1.0};
+GLfloat ambientLight[] = {0.3, 0.3, 0.3, 1.0};
+GLfloat difuse[] = {0.7, 0.7, 0.7, 1.0};
+GLfloat especular[] = {0.3, 0.3, 0.3, 1.0};
+GLfloat lightPosition[] = {-5.0, 5.0, -5.0, 1.0};
 GLfloat brilho[] = {50.0};
 GLfloat gray[] = {0.75, 0.75, 0.75, 1.0};
+GLfloat spec[] = {0.0, 0.0, 0.0, 1.0};
 GLint perspectiva;
 
 float *normaliza(float *v)
@@ -102,7 +103,7 @@ void poligono3d(float verts[16][3], float espessura)
   for (int i = 0; i < 7; i++)
   {
 
-    glNormal3fv(Normal(verts[i], verts[i + 1], verts[i + 8]));
+    glNormal3fv(Normal(verts[i+8], verts[i + 1], verts[i]));
     glVertex3fv(verts[i]);
     glVertex3fv(verts[i + 1]);
     glVertex3fv(verts[i + 8]);
@@ -111,7 +112,7 @@ void poligono3d(float verts[16][3], float espessura)
     glVertex3fv(verts[i + 9]);
   }
 
-  glNormal3fv(Normal(verts[7], verts[0], verts[15]));
+  glNormal3fv(Normal(verts[15], verts[0], verts[7]));
 
   glVertex3fv(verts[7]);
   glVertex3fv(verts[0]);
@@ -127,7 +128,7 @@ void triangulo3d(float verts[6][3], float espessura)
 {
   glLineWidth(espessura);
   glBegin(GL_TRIANGLES);
-  glNormal3fv(Normal(verts[0], verts[1], verts[2]));
+  glNormal3fv(Normal(verts[2], verts[1], verts[0]));
   for (int i = 0; i < 3; i++)
   {
     glVertex3fv(verts[i]);
@@ -143,7 +144,7 @@ void triangulo3d(float verts[6][3], float espessura)
   glEnd();
 
   glBegin(GL_TRIANGLES);
-  glNormal3fv(Normal(verts[0], verts[1], verts[3]));
+  glNormal3fv(Normal(verts[3], verts[1], verts[0]));
   glVertex3fv(verts[0]);
   glVertex3fv(verts[1]);
   glVertex3fv(verts[3]);
@@ -151,7 +152,7 @@ void triangulo3d(float verts[6][3], float espessura)
   glVertex3fv(verts[3]);
   glVertex3fv(verts[4]);
 
-  glNormal3fv(Normal(verts[1], verts[2], verts[4]));
+  glNormal3fv(Normal(verts[4], verts[2], verts[1]));
   glVertex3fv(verts[1]);
   glVertex3fv(verts[2]);
   glVertex3fv(verts[4]);
@@ -159,7 +160,7 @@ void triangulo3d(float verts[6][3], float espessura)
   glVertex3fv(verts[4]);
   glVertex3fv(verts[5]);
 
-  glNormal3fv(Normal(verts[2], verts[1], verts[5]));
+  glNormal3fv(Normal(verts[5], verts[2], verts[1]));
   glVertex3fv(verts[2]);
   glVertex3fv(verts[1]);
   glVertex3fv(verts[5]);
@@ -280,28 +281,41 @@ void display(void)
   //3d Concavo
   float vertices3[16][3] = {{3, 1, 0}, {3, 2, 0}, {3, 3, 0}, {2, 3, 0}, {2, 2, 0}, {1, 2, 0}, {1, 1, 0}, {2, 1, 0}, {3, 1, 1}, {3, 2, 1}, {3, 3, 1}, {2, 3, 1}, {2, 2, 1}, {1, 2, 1}, {1, 1, 1}, {2, 1, 1}};
   float vertices4[16][3] = {{3, 1, 0}, {3, 2, 0}, {3, 3, 0}, {2, 3, 0}, {2, 2, 0}, {1, 2, 0}, {1, 1, 0}, {2, 1, 0}, {3, 1, 1}, {3, 2, 1}, {3, 3, 1}, {2, 3, 1}, {2, 2, 1}, {1, 2, 1}, {1, 1, 1}, {2, 1, 1}};
-  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_LIGHTING);
+
+
   glShadeModel(GL_SMOOTH);
+  glEnable(GL_NORMALIZE);
   //glClearColor(1.0, 1.0, 1.0, 0.0);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLight);
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, gray);
   glEnable(GL_COLOR_MATERIAL);
   glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-  glLightfv(GL_LIGHT1, GL_AMBIENT, ambientLight);
+  glLightfv(GL_LIGHT1, GL_DIFFUSE, ambientLight);
+  glEnable(GL_LIGHT1);
+  
+  glMaterialfv(GL_FRONT, GL_SPECULAR, spec);
+  glMateriali(GL_FRONT,GL_SHININESS,20);
+  glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, difuse);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, especular);
+  glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+  glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
-  glColor3f(0.0, 0.0, 1.0);
+  
+   glEnable(GL_DEPTH_TEST);
+     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glColor3f(0.5, 0.5, 0.0);
   Translate(-3, 0, 0);
   //triangulo(vertice1, GL_TRIANGLES, 4);
   triangulo3d(vertice3, 4);
   Translate(3, 2, 0);
   RotateZ(-180);
   Translate(-3, -2, 0);
-  glColor3f(0.0, 0.0, 1.0);
+  glColor3f(0.0, 1.0, 0.0);
   //triangulo(vertice2, GL_TRIANGLES, 4);
   triangulo3d(vertice4, 4);
-  glColor3f(0.0, 0.0, 1.0);
+  glColor3f(1.0, 0.0, 0.0);
   Translate(4, 4, 0);   //Move para 3 quadrante para rotacionar
   RotateZ(90);          // Rotaciona em z
   Translate(-5, -3, 0); // Move para a posicao correta
@@ -343,7 +357,7 @@ void reshape(int w, int h)
     gluPerspective(angle, fAspect, -1.0, 100.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(UpDown, LeftRight, Forward, 0, 0, 0, 0, 1, 0);
+    gluLookAt(LeftRight, UpDown, Forward, 0, 0, 0, 0, 1, 0);
   }
 }
 
