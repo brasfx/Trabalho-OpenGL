@@ -6,10 +6,10 @@ GLfloat angle, fAspect, UpDown, LeftRight, Forward;
 GLfloat ambientLight[] = {0.3, 0.3, 0.3, 1.0};
 GLfloat difuse[] = {0.7, 0.7, 0.7, 1.0};
 GLfloat especular[] = {0.3, 0.3, 0.3, 1.0};
-GLfloat lightPosition[] = {-5.0, 5.0, -5.0, 1.0};
+GLfloat lightPosition[] = {-5.0, 5.0, -5.0, 0.0};
 GLfloat brilho[] = {50.0};
 GLfloat gray[] = {0.75, 0.75, 0.75, 1.0};
-GLfloat spec[] = {0.0, 0.0, 0.0, 1.0};
+GLfloat spec[] = {1.0, 1.0, 1.0, 1.0};
 GLint perspectiva;
 
 void setPixel(int x, int y, int z){
@@ -236,7 +236,7 @@ void triangulo3d(float verts[6][3], float espessura)
   glEnd();
 
   glBegin(GL_TRIANGLES);
-  glNormal3fv(Normal(verts[3], verts[1], verts[0]));
+  glNormal3fv(Normal(verts[0], verts[1], verts[3]));
   glVertex3fv(verts[0]);
   glVertex3fv(verts[1]);
   glVertex3fv(verts[3]);
@@ -244,7 +244,7 @@ void triangulo3d(float verts[6][3], float espessura)
   glVertex3fv(verts[3]);
   glVertex3fv(verts[4]);
 
-  glNormal3fv(Normal(verts[4], verts[2], verts[1]));
+  glNormal3fv(Normal(verts[1], verts[2], verts[4]));
   glVertex3fv(verts[1]);
   glVertex3fv(verts[2]);
   glVertex3fv(verts[4]);
@@ -252,13 +252,13 @@ void triangulo3d(float verts[6][3], float espessura)
   glVertex3fv(verts[4]);
   glVertex3fv(verts[5]);
 
-  glNormal3fv(Normal(verts[5], verts[2], verts[1]));
-  glVertex3fv(verts[2]);
-  glVertex3fv(verts[1]);
-  glVertex3fv(verts[5]);
-  glVertex3fv(verts[1]);
-  glVertex3fv(verts[5]);
+  glNormal3fv(Normal(verts[0], verts[3], verts[5]));
+  glVertex3fv(verts[0]);
   glVertex3fv(verts[3]);
+  glVertex3fv(verts[5]);
+  glVertex3fv(verts[2]);
+  glVertex3fv(verts[5]);
+  glVertex3fv(verts[0]);
   glEnd();
 }
 
@@ -384,10 +384,16 @@ void display(void)
   glEnable(GL_COLOR_MATERIAL);
   glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
   glLightfv(GL_LIGHT1, GL_DIFFUSE, ambientLight);
+  //glLightfv(GL_LIGHT1, GL_POSITION, lightPosition);
   glEnable(GL_LIGHT1);
   
+  glLightfv(GL_LIGHT2, GL_SPECULAR, especular);
+  //glLightfv(GL_LIGHT2, GL_POSITION, lightPosition);
+  glEnable(GL_LIGHT2);
+  
+  
   glMaterialfv(GL_FRONT, GL_SPECULAR, spec);
-  glMateriali(GL_FRONT,GL_SHININESS,20);
+  glMateriali(GL_FRONT,GL_SHININESS,128);
   glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
   glLightfv(GL_LIGHT0, GL_DIFFUSE, difuse);
   glLightfv(GL_LIGHT0, GL_SPECULAR, especular);
