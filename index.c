@@ -12,6 +12,14 @@ GLfloat gray[] = {0.75, 0.75, 0.75, 1.0};
 GLfloat spec[] = {0.0, 0.0, 0.0, 1.0};
 GLint perspectiva;
 
+void setPixel(int x, int y, int z){
+  glBegin(GL_POINTS);
+  glVertex3i(x,y,z);
+  glEnd();
+  glFlush();
+}
+
+
 void DDAXY(int x1, int y1, int x2, int y2){
   float length;
   float x,y, dx,dy;
@@ -25,10 +33,7 @@ void DDAXY(int x1, int y1, int x2, int y2){
   x=x1;
   y=y1;
   for (int i=0; i<length; i++){
-    glBegin(GL_POINTS);
-    glVertex3i(round(x),round(y),0);
-    glEnd();
-    glFlush();
+    setPixel(round(x),round(y),0);
     x=x+dx;
     y=y+dy;
   }
@@ -48,10 +53,7 @@ void DDAXZ(int x1, int z1, int x2, int z2){
   x=x1;
   z=z1;
   for (int i=0; i<length; i++){
-    glBegin(GL_POINTS);
-    glVertex3i(round(x),0,round(z));
-    glEnd();
-    glFlush();
+    setPixel(round(x),0,round(z));
     x=x+dx;
     z=z+dz;
   }
@@ -71,10 +73,7 @@ void DDAYZ(int y1, int z1, int y2, int z2){
   y=y1;
   z=z1;
   for (int i=0; i<length; i++){
-    glBegin(GL_POINTS);
-    glVertex3i(0,round(y),round(z));
-    glEnd();
-    glFlush();
+    setPixel(0,round(y),round(z));
     y=y+dy;
     z=z+dz;
   }
@@ -97,10 +96,7 @@ void DDAXYZ(int x1,int y1, int z1, int x2, int y2, int z2){
   y=y1;
   z=z1;
   for (int i=0; i<length; i++){
-    glBegin(GL_POINTS);
-    glVertex3i(round(x),round(y),round(z));
-    glEnd();
-    glFlush();
+    setPixel(round(x),round(y),round(z));
     x=x+dx;
     y=y+dy;
     z=z+dz;
@@ -402,6 +398,7 @@ void display(void)
    glEnable(GL_DEPTH_TEST);
      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glColor3f(0.5, 0.5, 0.0);
+  DDAXYZ(0,2,1,3,5,8);
   Translate(-3, 0, 0);
   //triangulo(vertice1, GL_TRIANGLES, 4);
   triangulo3d(vertice3, 4);
