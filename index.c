@@ -12,6 +12,102 @@ GLfloat gray[] = {0.75, 0.75, 0.75, 1.0};
 GLfloat spec[] = {0.0, 0.0, 0.0, 1.0};
 GLint perspectiva;
 
+void DDAXY(int x1, int y1, int x2, int y2){
+  float length;
+  float x,y, dx,dy;
+  if (abs(y2-y1)>abs(x2-x1)){
+    length = abs(y2-y1);
+  }else{
+    length = abs(x2-x1);
+  }
+  dx = (x2-x1)/length;
+  dy = (y2-y1)/length;
+  x=x1;
+  y=y1;
+  for (int i=0; i<length; i++){
+    glBegin(GL_POINTS);
+    glVertex3i(round(x),round(y),0);
+    glEnd();
+    glFlush();
+    x=x+dx;
+    y=y+dy;
+  }
+  
+}
+
+void DDAXZ(int x1, int z1, int x2, int z2){
+  float length;
+  float x,z, dx,dz;
+  if (abs(z2-z1)>abs(x2-x1)){
+    length = abs(z2-z1);
+  }else{
+    length = abs(x2-x1);
+  }
+  dx = (x2-x1)/length;
+  dz = (z2-z1)/length;
+  x=x1;
+  z=z1;
+  for (int i=0; i<length; i++){
+    glBegin(GL_POINTS);
+    glVertex3i(round(x),0,round(z));
+    glEnd();
+    glFlush();
+    x=x+dx;
+    z=z+dz;
+  }
+  
+}
+
+void DDAYZ(int y1, int z1, int y2, int z2){
+  float length;
+  float y,z, dy,dz;
+  if (abs(z2-z1)>abs(y2-y1)){
+    length = abs(z2-z1);
+  }else{
+    length = abs(y2-y1);
+  }
+  dy = (y2-y1)/length;
+  dz = (z2-z1)/length;
+  y=y1;
+  z=z1;
+  for (int i=0; i<length; i++){
+    glBegin(GL_POINTS);
+    glVertex3i(0,round(y),round(z));
+    glEnd();
+    glFlush();
+    y=y+dy;
+    z=z+dz;
+  }
+  
+}
+
+void DDAXYZ(int x1,int y1, int z1, int x2, int y2, int z2){
+  float length;
+  float x,y,z, dx,dy,dz;
+  length = abs(x2-x1);
+  if (abs(z2-z1)>abs(y2-y1) && abs(z2-z1)>abs(y2-y1)){
+    length = abs(z2-z1);
+  }if (abs(y2-y1)>abs(x2-x1) && abs(y2-y1)>abs(z2-z1)){
+    length = abs(y2-y1);
+  }
+  dx = (x2-x1)/length;
+  dy = (y2-y1)/length;
+  dz = (z2-z1)/length;
+  x=x1;
+  y=y1;
+  z=z1;
+  for (int i=0; i<length; i++){
+    glBegin(GL_POINTS);
+    glVertex3i(round(x),round(y),round(z));
+    glEnd();
+    glFlush();
+    x=x+dx;
+    y=y+dy;
+    z=z+dz;
+  }
+  
+}
+
 float *normaliza(float *v)
 {
   float *normalizado;
