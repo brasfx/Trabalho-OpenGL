@@ -185,7 +185,7 @@ void poligono3d(float verts[16][3], float espessura)
   }
   glEnd();
   glBegin(GL_TRIANGLE_FAN);
-  glNormal3fv(Normal(verts[0], verts[2], verts[1]));
+  glNormal3fv(Normal(verts[2], verts[0], verts[1]));
   for (int i = 8; i < 16; i++)
   {
     glVertex3fv(verts[i]);
@@ -354,7 +354,7 @@ void Scale(float sx, float sy, float sz)
                         {0, 0, 0, 1}};
   matriz[0][0] = sx;
   matriz[1][1] = sy;
-  matriz[1][1] = sz;
+  matriz[2][2] = sz;
   Transposta(matriz);
   glMultMatrixf((float *)matriz);
 }
@@ -395,7 +395,7 @@ void display(void)
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glColor3f(0.5, 0.5, 0.0);
   DDAXYZ(0,2,1,3,5,8);
-  
+  Scale(2,2,2);
   Translate(-2.05,-2.05,0);
   RotateZ(-45);
   
