@@ -284,15 +284,6 @@ void triangulo3d(float verts[6][3], float espessura)
   glEnd();
 }
 
-void linha(float x1, float y1, float z1, float x2, float y2, float z2, float espessura)
-{
-  glLineWidth(espessura);
-  glBegin(GL_LINES);
-  glVertex3f(x1, y1, z1);
-  glVertex3f(x2, y2, z2);
-  glEnd();
-}
-
 void Transposta(float matriz[4][4])
 {
   float aux;
@@ -565,5 +556,3 @@ int main(int argc, char **argv)
   geraTextura(4, 4);
   return 0;
 }
-
-// {{2, 3, 0}, {3, 2, 0}, {3, 4, 0}, {4, 3, 0}} = vertice1 + vertice2
