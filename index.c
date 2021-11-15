@@ -361,20 +361,11 @@ void Scale(float sx, float sy, float sz)
 
 void display(void)
 {
-  //2d triangulo
-  float vertice1[3][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0}};
-  float vertice2[3][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0}};
-  //3d triangulo
-  float vertice3[6][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0}, {2, 3, 1}, {3, 2, 1}, {4, 3, 1}};
-  float vertice4[6][3] = {{2, 3, 0}, {3, 2, 0}, {4, 3, 0}, {2, 3, 1}, {3, 2, 1}, {4, 3, 1}};
-  //2d Concavo
-  float vertices[8][3] = {{3, 1, 0}, {3, 2, 0}, {3, 3, 0}, {2, 3, 0}, {2, 2, 0}, {1, 2, 0}, {1, 1, 0}, {2, 1, 0}};
-  float vertices2[8][3] = {{3, 1, 0}, {3, 2, 0}, {3, 3, 0}, {2, 3, 0}, {2, 2, 0}, {1, 2, 0}, {1, 1, 0}, {2, 1, 0}};
-  //3d Concavo
-  float vertices3[16][3] = {{3, 1, 0}, {3, 2, 0}, {3, 3, 0}, {2, 3, 0}, {2, 2, 0}, {1, 2, 0}, {1, 1, 0}, {2, 1, 0}, {3, 1, 1}, {3, 2, 1}, {3, 3, 1}, {2, 3, 1}, {2, 2, 1}, {1, 2, 1}, {1, 1, 1}, {2, 1, 1}};
-  float vertices4[16][3] = {{3, 1, 0}, {3, 2, 0}, {3, 3, 0}, {2, 3, 0}, {2, 2, 0}, {1, 2, 0}, {1, 1, 0}, {2, 1, 0}, {3, 1, 1}, {3, 2, 1}, {3, 3, 1}, {2, 3, 1}, {2, 2, 1}, {1, 2, 1}, {1, 1, 1}, {2, 1, 1}};
 
-
+  float triangulo1[6][3] = {{0, 2.1, 0}, {2, 2.1, 0}, {2, 4.1, 0}, {0, 2.1, 1}, {2, 2.1, 1}, {2, 4.1, 1}};
+  float triangulo2[6][3] = {{2.1, 2, 0}, {2.1, 0, 0}, {4.1, 2, 0}, {2.1, 2, 1}, {2.1, 0, 1}, {4.1, 2, 1}};
+  float concavo1[16][3] = {{0, 0, 0},{1,0,0}, {2, 0, 0}, {2, 1, 0}, {1, 1, 0}, {1, 2, 0}, {0, 2, 0},{0,1,0}, {0, 0, 1},{1,0,1}, {2, 0, 1}, {2, 1, 1}, {1, 1, 1}, {1, 2, 1}, {0, 2, 1},{0,1,1}};
+  float concavo2[16][3] = {{4.1, 4.1, 0}, {3.1, 4.1, 0} ,{2.1, 4.1, 0}, {2.1, 3.1, 0}, {3.1, 3.1, 0}, {3.1, 2.1, 0},{4.1, 2.1, 0},{4.1, 3.1, 0},{4.1, 4.1, 1}, {3.1, 4.1, 1} ,{2.1, 4.1, 1}, {2.1, 3.1, 1}, {3.1, 3.1, 1}, {3.1, 2.1, 1},{4.1, 2.1, 1},{4.1, 3.1, 1}};
   glShadeModel(GL_SMOOTH);
   glEnable(GL_NORMALIZE);
   //glClearColor(1.0, 1.0, 1.0, 0.0);
@@ -383,12 +374,11 @@ void display(void)
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, gray);
   glEnable(GL_COLOR_MATERIAL);
   glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+  
   glLightfv(GL_LIGHT1, GL_DIFFUSE, ambientLight);
-  //glLightfv(GL_LIGHT1, GL_POSITION, lightPosition);
   glEnable(GL_LIGHT1);
   
   glLightfv(GL_LIGHT2, GL_SPECULAR, especular);
-  //glLightfv(GL_LIGHT2, GL_POSITION, lightPosition);
   glEnable(GL_LIGHT2);
   
   
@@ -401,38 +391,24 @@ void display(void)
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   
-   glEnable(GL_DEPTH_TEST);
-     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glEnable(GL_DEPTH_TEST);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glColor3f(0.5, 0.5, 0.0);
   DDAXYZ(0,2,1,3,5,8);
-  Translate(-3, 0, 0);
-  //triangulo(vertice1, GL_TRIANGLES, 4);
-  triangulo3d(vertice3, 4);
-  Translate(3, 2, 0);
-  RotateZ(-180);
-  Translate(-3, -2, 0);
-  glColor3f(0.0, 1.0, 0.0);
-  //triangulo(vertice2, GL_TRIANGLES, 4);
-  triangulo3d(vertice4, 4);
-  glColor3f(1.0, 0.0, 0.0);
-  Translate(4, 4, 0);   //Move para 3 quadrante para rotacionar
-  RotateZ(90);          // Rotaciona em z
-  Translate(-5, -3, 0); // Move para a posicao correta
-  glColor3f(0.0, 0.0, 1.0);
-  Translate(4, -4, 0);
-  RotateZ(90);
-  Translate(4, -4, 0);
-  RotateZ(90);
-  Translate(2, -8, 0);
+  
+  Translate(-2.05,-2.05,0);
   RotateZ(-45);
-  Scale(0.70, 0.70, 0.70);
-  Translate(-1.97, 4, 0);
-  //poligono(vertices, GL_TRIANGLE_FAN, 2);
-  poligono3d(vertices3, 2);
-  RotateZ(180);
-  Translate(-1.91, -6.12, 0);
-  //poligono(vertices2, GL_TRIANGLE_FAN, 2);
-  poligono3d(vertices4, 2);
+  
+  triangulo3d(triangulo1,4);
+  glColor3f(0.0, 1.0, 0.0);
+  
+  triangulo3d(triangulo2,4);
+  glColor3f(1.0, 0.0, 0.0);
+    
+  poligono3d(concavo1,2);
+  glColor3f(0.0, 0.0, 1.0);
+  
+  poligono3d(concavo2,2);
   glLoadIdentity();
   glFlush();
 }
