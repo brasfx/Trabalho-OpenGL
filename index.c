@@ -1,6 +1,7 @@
 #include <GL/glut.h>
 #include <stdlib.h>
 #include <math.h>
+#include <SOIL/SOIL.h>
 
 GLfloat angle, fAspect, UpDown, LeftRight, Forward;
 GLfloat ambientLight[] = {0.3, 0.3, 0.3, 1.0};
@@ -11,97 +12,115 @@ GLfloat brilho[] = {50.0};
 GLfloat gray[] = {0.75, 0.75, 0.75, 1.0};
 GLfloat spec[] = {1.0, 1.0, 1.0, 1.0};
 GLint perspectiva;
+GLuint texture;
+unsigned char *image;
 
-void setPixel(int x, int y, int z){
+void setPixel(int x, int y, int z)
+{
   glBegin(GL_POINTS);
-  glVertex3i(x,y,z);
+  glVertex3i(x, y, z);
   glEnd();
   glFlush();
 }
 
-
-void DDAXY(int x1, int y1, int x2, int y2){
+void DDAXY(int x1, int y1, int x2, int y2)
+{
   float length;
-  float x,y, dx,dy;
-  if (abs(y2-y1)>abs(x2-x1)){
-    length = abs(y2-y1);
-  }else{
-    length = abs(x2-x1);
+  float x, y, dx, dy;
+  if (abs(y2 - y1) > abs(x2 - x1))
+  {
+    length = abs(y2 - y1);
   }
-  dx = (x2-x1)/length;
-  dy = (y2-y1)/length;
-  x=x1;
-  y=y1;
-  for (int i=0; i<length; i++){
-    setPixel(round(x),round(y),0);
-    x=x+dx;
-    y=y+dy;
+  else
+  {
+    length = abs(x2 - x1);
   }
-  
+  dx = (x2 - x1) / length;
+  dy = (y2 - y1) / length;
+  x = x1;
+  y = y1;
+  for (int i = 0; i < length; i++)
+  {
+    setPixel(round(x), round(y), 0);
+    x = x + dx;
+    y = y + dy;
+  }
 }
 
-void DDAXZ(int x1, int z1, int x2, int z2){
+void DDAXZ(int x1, int z1, int x2, int z2)
+{
   float length;
-  float x,z, dx,dz;
-  if (abs(z2-z1)>abs(x2-x1)){
-    length = abs(z2-z1);
-  }else{
-    length = abs(x2-x1);
+  float x, z, dx, dz;
+  if (abs(z2 - z1) > abs(x2 - x1))
+  {
+    length = abs(z2 - z1);
   }
-  dx = (x2-x1)/length;
-  dz = (z2-z1)/length;
-  x=x1;
-  z=z1;
-  for (int i=0; i<length; i++){
-    setPixel(round(x),0,round(z));
-    x=x+dx;
-    z=z+dz;
+  else
+  {
+    length = abs(x2 - x1);
   }
-  
+  dx = (x2 - x1) / length;
+  dz = (z2 - z1) / length;
+  x = x1;
+  z = z1;
+  for (int i = 0; i < length; i++)
+  {
+    setPixel(round(x), 0, round(z));
+    x = x + dx;
+    z = z + dz;
+  }
 }
 
-void DDAYZ(int y1, int z1, int y2, int z2){
+void DDAYZ(int y1, int z1, int y2, int z2)
+{
   float length;
-  float y,z, dy,dz;
-  if (abs(z2-z1)>abs(y2-y1)){
-    length = abs(z2-z1);
-  }else{
-    length = abs(y2-y1);
+  float y, z, dy, dz;
+  if (abs(z2 - z1) > abs(y2 - y1))
+  {
+    length = abs(z2 - z1);
   }
-  dy = (y2-y1)/length;
-  dz = (z2-z1)/length;
-  y=y1;
-  z=z1;
-  for (int i=0; i<length; i++){
-    setPixel(0,round(y),round(z));
-    y=y+dy;
-    z=z+dz;
+  else
+  {
+    length = abs(y2 - y1);
   }
-  
+  dy = (y2 - y1) / length;
+  dz = (z2 - z1) / length;
+  y = y1;
+  z = z1;
+  for (int i = 0; i < length; i++)
+  {
+    setPixel(0, round(y), round(z));
+    y = y + dy;
+    z = z + dz;
+  }
 }
 
-void DDAXYZ(int x1,int y1, int z1, int x2, int y2, int z2){
+void DDAXYZ(int x1, int y1, int z1, int x2, int y2, int z2)
+{
   float length;
-  float x,y,z, dx,dy,dz;
-  length = abs(x2-x1);
-  if (abs(z2-z1)>abs(y2-y1) && abs(z2-z1)>abs(y2-y1)){
-    length = abs(z2-z1);
-  }if (abs(y2-y1)>abs(x2-x1) && abs(y2-y1)>abs(z2-z1)){
-    length = abs(y2-y1);
+  float x, y, z, dx, dy, dz;
+  length = abs(x2 - x1);
+  if (abs(z2 - z1) > abs(y2 - y1) && abs(z2 - z1) > abs(y2 - y1))
+  {
+    length = abs(z2 - z1);
   }
-  dx = (x2-x1)/length;
-  dy = (y2-y1)/length;
-  dz = (z2-z1)/length;
-  x=x1;
-  y=y1;
-  z=z1;
-  for (int i=0; i<length; i++){
-    setPixel(round(x),round(y),round(z));
-    x=x+dx;
-    y=y+dy;
-    z=z+dz;
+  if (abs(y2 - y1) > abs(x2 - x1) && abs(y2 - y1) > abs(z2 - z1))
+  {
+    length = abs(y2 - y1);
   }
-  
+  dx = (x2 - x1) / length;
+  dy = (y2 - y1) / length;
+  dz = (z2 - z1) / length;
+  x = x1;
+  y = y1;
+  z = z1;
+  for (int i = 0; i < length; i++)
+  {
+    setPixel(round(x), round(y), round(z));
+    x = x + dx;
+    y = y + dy;
+    z = z + dz;
+  }
 }
 
 float *normaliza(float *v)
@@ -195,7 +214,7 @@ void poligono3d(float verts[16][3], float espessura)
   for (int i = 0; i < 7; i++)
   {
 
-    glNormal3fv(Normal(verts[i+8], verts[i + 1], verts[i]));
+    glNormal3fv(Normal(verts[i + 8], verts[i + 1], verts[i]));
     glVertex3fv(verts[i]);
     glVertex3fv(verts[i + 1]);
     glVertex3fv(verts[i + 8]);
@@ -364,8 +383,8 @@ void display(void)
 
   float triangulo1[6][3] = {{0, 2.1, 0}, {2, 2.1, 0}, {2, 4.1, 0}, {0, 2.1, 1}, {2, 2.1, 1}, {2, 4.1, 1}};
   float triangulo2[6][3] = {{2.1, 2, 0}, {2.1, 0, 0}, {4.1, 2, 0}, {2.1, 2, 1}, {2.1, 0, 1}, {4.1, 2, 1}};
-  float concavo1[16][3] = {{0, 0, 0},{1,0,0}, {2, 0, 0}, {2, 1, 0}, {1, 1, 0}, {1, 2, 0}, {0, 2, 0},{0,1,0}, {0, 0, 1},{1,0,1}, {2, 0, 1}, {2, 1, 1}, {1, 1, 1}, {1, 2, 1}, {0, 2, 1},{0,1,1}};
-  float concavo2[16][3] = {{4.1, 4.1, 0}, {3.1, 4.1, 0} ,{2.1, 4.1, 0}, {2.1, 3.1, 0}, {3.1, 3.1, 0}, {3.1, 2.1, 0},{4.1, 2.1, 0},{4.1, 3.1, 0},{4.1, 4.1, 1}, {3.1, 4.1, 1} ,{2.1, 4.1, 1}, {2.1, 3.1, 1}, {3.1, 3.1, 1}, {3.1, 2.1, 1},{4.1, 2.1, 1},{4.1, 3.1, 1}};
+  float concavo1[16][3] = {{0, 0, 0}, {1, 0, 0}, {2, 0, 0}, {2, 1, 0}, {1, 1, 0}, {1, 2, 0}, {0, 2, 0}, {0, 1, 0}, {0, 0, 1}, {1, 0, 1}, {2, 0, 1}, {2, 1, 1}, {1, 1, 1}, {1, 2, 1}, {0, 2, 1}, {0, 1, 1}};
+  float concavo2[16][3] = {{4.1, 4.1, 0}, {3.1, 4.1, 0}, {2.1, 4.1, 0}, {2.1, 3.1, 0}, {3.1, 3.1, 0}, {3.1, 2.1, 0}, {4.1, 2.1, 0}, {4.1, 3.1, 0}, {4.1, 4.1, 1}, {3.1, 4.1, 1}, {2.1, 4.1, 1}, {2.1, 3.1, 1}, {3.1, 3.1, 1}, {3.1, 2.1, 1}, {4.1, 2.1, 1}, {4.1, 3.1, 1}};
   glShadeModel(GL_SMOOTH);
   glEnable(GL_NORMALIZE);
   //glClearColor(1.0, 1.0, 1.0, 0.0);
@@ -374,41 +393,40 @@ void display(void)
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, gray);
   glEnable(GL_COLOR_MATERIAL);
   glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-  
+
   glLightfv(GL_LIGHT1, GL_DIFFUSE, ambientLight);
   glEnable(GL_LIGHT1);
-  
+
   glLightfv(GL_LIGHT2, GL_SPECULAR, especular);
   glEnable(GL_LIGHT2);
-  
-  
+
   glMaterialfv(GL_FRONT, GL_SPECULAR, spec);
-  glMateriali(GL_FRONT,GL_SHININESS,128);
+  glMateriali(GL_FRONT, GL_SHININESS, 128);
   glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
   glLightfv(GL_LIGHT0, GL_DIFFUSE, difuse);
   glLightfv(GL_LIGHT0, GL_SPECULAR, especular);
   glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
-  
+
   glEnable(GL_DEPTH_TEST);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glColor3f(0.5, 0.5, 0.0);
-  DDAXYZ(0,2,1,3,5,8);
-  Scale(2,2,2);
-  Translate(-2.05,-2.05,0);
+  DDAXYZ(0, 2, 1, 3, 5, 8);
+  Scale(2, 2, 2);
+  Translate(-2.05, -2.05, 0);
   RotateZ(-45);
-  
-  triangulo3d(triangulo1,4);
+
+  triangulo3d(triangulo1, 4);
   glColor3f(0.0, 1.0, 0.0);
-  
-  triangulo3d(triangulo2,4);
+
+  triangulo3d(triangulo2, 4);
   glColor3f(1.0, 0.0, 0.0);
-    
-  poligono3d(concavo1,2);
+
+  poligono3d(concavo1, 2);
   glColor3f(0.0, 0.0, 1.0);
-  
-  poligono3d(concavo2,2);
+
+  poligono3d(concavo2, 2);
   glLoadIdentity();
   glFlush();
 }
@@ -500,12 +518,30 @@ void GerenciaMouse(int button, int state, int x, int y)
   glutPostRedisplay();
 }
 
+void geraTextura(int width, int height)
+{
+  glGenTextures(1, &texture);
+  image = SOIL_load_image("textura,jpg", &width, &height, 0, SOIL_LOAD_RGB);
+
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, texture);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    SOIL_free_image_data(image);
+}
+
 int main(int argc, char **argv)
 {
   glutInit(&argc, argv);
   angle = 45;
   Forward = 200;
   perspectiva = 1;
+  geraTextura(1, 1);
   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
   glutInitWindowSize(800, 800);
   glutInitWindowPosition(10, 10);
@@ -515,6 +551,7 @@ int main(int argc, char **argv)
   glutMouseFunc(GerenciaMouse);
   glutKeyboardFunc(GerenciaTeclado);
   glutMainLoop();
+
   return 0;
 }
 
