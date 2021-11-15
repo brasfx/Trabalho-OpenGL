@@ -14,7 +14,7 @@ GLfloat brilho[] = {50.0};
 GLfloat gray[] = {0.75, 0.75, 0.75, 1.0};
 GLfloat spec[] = {1.0, 1.0, 1.0, 1.0};
 GLint perspectiva;
-GLuint texture[1];
+GLuint texture;
 unsigned char *image;
 
 void setPixel(int x, int y, int z)
@@ -256,7 +256,7 @@ void triangulo3d(float verts[6][3], float espessura)
     glVertex3fv(verts[i]);
   }
   glEnd();
-  glBindTexture(GL_TEXTURE_2D, texture[0]);
+  glBindTexture(GL_TEXTURE_2D, texture);
   glBegin(GL_TRIANGLES);
   glNormal3fv(Normal(verts[0], verts[1], verts[3]));
   glVertex3fv(verts[0]);
@@ -517,9 +517,9 @@ void geraTextura(int width, int height)
   glEnable(GL_TEXTURE_2D);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
   //image = stbi_load("textura.jpg", &width, &height, 3, 0);
-  glGenTextures(1, texture);
+  glGenTextures(1, &texture);
   //glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, texture[0]);
+  glBindTexture(GL_TEXTURE_2D, texture);
   image = SOIL_load_image("textura.jpg", &width, &height, 0, SOIL_LOAD_RGB);
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -529,7 +529,7 @@ void geraTextura(int width, int height)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-  //glGenerateMipMaps(GL_TEXTURE_2D);
+  //glGenerateMipMap(GL_TEXTURE_2D);
 
   // stbi_image_free(texture);
   glBindTexture(GL_TEXTURE_2D, 0);
@@ -548,11 +548,11 @@ int main(int argc, char **argv)
   glutInitWindowSize(800, 800);
   glutInitWindowPosition(10, 10);
   glutCreateWindow(argv[0]);
+  geraTextura(4, 4);
   glutDisplayFunc(display);
   glutReshapeFunc(reshape);
   glutMouseFunc(GerenciaMouse);
   glutKeyboardFunc(GerenciaTeclado);
   glutMainLoop();
-  geraTextura(4, 4);
   return 0;
 }
