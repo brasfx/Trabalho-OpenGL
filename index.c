@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <SOIL/SOIL.h>
+// #define STB_IMAGE_IMPLEMENTATION
+// #include <stb_image.h>
 
 GLfloat angle, fAspect, UpDown, LeftRight, Forward;
 GLfloat ambientLight[] = {0.3, 0.3, 0.3, 1.0};
@@ -12,7 +14,7 @@ GLfloat brilho[] = {50.0};
 GLfloat gray[] = {0.75, 0.75, 0.75, 1.0};
 GLfloat spec[] = {1.0, 1.0, 1.0, 1.0};
 GLint perspectiva;
-GLuint texture;
+GLuint texture[1];
 unsigned char *image;
 
 void setPixel(int x, int y, int z)
@@ -196,6 +198,7 @@ void triangulo(float verts[3][3], int primitiva, float espessura)
 void poligono3d(float verts[16][3], float espessura)
 {
   glLineWidth(espessura);
+
   glBegin(GL_TRIANGLE_FAN);
   glNormal3fv(Normal(verts[0], verts[1], verts[2]));
   for (int i = 0; i < 8; i++)
@@ -253,7 +256,7 @@ void triangulo3d(float verts[6][3], float espessura)
     glVertex3fv(verts[i]);
   }
   glEnd();
-
+  glBindTexture(GL_TEXTURE_2D, texture[0]);
   glBegin(GL_TRIANGLES);
   glNormal3fv(Normal(verts[0], verts[1], verts[3]));
   glVertex3fv(verts[0]);
@@ -520,19 +523,27 @@ void GerenciaMouse(int button, int state, int x, int y)
 
 void geraTextura(int width, int height)
 {
-  glGenTextures(1, &texture);
-  image = SOIL_load_image("textura,jpg", &width, &height, 0, SOIL_LOAD_RGB);
-
   glEnable(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, texture);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  //image = stbi_load("textura.jpg", &width, &height, 3, 0);
+  glGenTextures(1, texture);
+  //glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, texture[0]);
+  image = SOIL_load_image("textura.jpg", &width, &height, 0, SOIL_LOAD_RGB);
 
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    SOIL_free_image_data(image);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+  //glGenerateMipMaps(GL_TEXTURE_2D);
+
+  // stbi_image_free(texture);
+  glBindTexture(GL_TEXTURE_2D, 0);
+
+  SOIL_free_image_data(image);
 }
 
 int main(int argc, char **argv)
@@ -541,7 +552,7 @@ int main(int argc, char **argv)
   angle = 45;
   Forward = 200;
   perspectiva = 1;
-  geraTextura(1, 1);
+
   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
   glutInitWindowSize(800, 800);
   glutInitWindowPosition(10, 10);
@@ -551,7 +562,7 @@ int main(int argc, char **argv)
   glutMouseFunc(GerenciaMouse);
   glutKeyboardFunc(GerenciaTeclado);
   glutMainLoop();
-
+  geraTextura(4, 4);
   return 0;
 }
 
