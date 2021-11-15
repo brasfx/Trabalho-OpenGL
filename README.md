@@ -1,1 +1,2 @@
 # Trabalho-OpenGL
+Desenvolvimento de um ambiente virtual utilizando OpenGL, contendo geometrias relacionadas a FURG e/ou ao C3, sendo necessário funções para translação, rotação e escala, projeção perspectivas, projeção ortogonais, aplicação de um algoritmo de visibilidade, aplicação de iluminação de Phong, Tonalização de Gourand, pelo menos um algoritmo de rasterização e a aplicação de uma ou mais texturas, de acordo com as aulas presente do tópico de computação gráficado professor Alessandro de Lima Bicho.
