@@ -282,6 +282,7 @@ void triangulo3d(float verts[6][3], float espessura)
   glVertex3fv(verts[5]);
   glVertex3fv(verts[0]);
   glEnd();
+  glDisable(GL_TEXTURE_2D);
 }
 
 void Transposta(float matriz[4][4])
